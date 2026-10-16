@@ -1,1 +1,24 @@
 @import "tailwindcss";
+
+@layer base {
+  ::selection {
+    background-color: #ebdbb2;
+    color: #282828;
+  }
+
+  /* Gruvbox subtle scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #fbf1c7;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d5c4a1;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #bdae93;
+  }
+}
