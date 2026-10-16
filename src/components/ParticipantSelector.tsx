@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { OpenWAGroup, OpenWAParticipant } from '../types/openwa';
 import { formatInternationalPhone } from '../utils/phone';
 import {
@@ -30,11 +30,15 @@ export function ParticipantSelector({
   onBack,
   onProceed,
 }: ParticipantSelectorProps) {
-  // Initialize selection with all participant IDs
   const [selectedIds, setSelectedIds] = useState<Set<string>>(() =>
     new Set(participants.map((p) => p.id))
   );
   const [search, setSearch] = useState('');
+
+  // Sync selection when participants are loaded asynchronously
+  useEffect(() => {
+    setSelectedIds(new Set(participants.map((p) => p.id)));
+  }, [participants]);
 
   // Keep selection synced if participants load later
   const currentParticipants = useMemo(() => {
