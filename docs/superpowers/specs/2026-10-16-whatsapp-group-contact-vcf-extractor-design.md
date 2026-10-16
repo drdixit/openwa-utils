@@ -79,9 +79,10 @@ This project provides a lightweight, dedicated React + TypeScript web applicatio
 5. **Step 4: Return to Home**:
    - Once downloaded, user is taken back to the initial group list view (Page 1) to process another group.
 
-6. **Phone Number Formatting**:
-   - WhatsApp participant JIDs are structured as `<country_code><national_number>@c.us` (e.g. `919409367178@c.us`).
-   - The extractor parses only numeric digits and ensures it starts with `+` (e.g., `+919409367178`).
+6. **Global / Multi-Country Phone Number Formatting**:
+   - The app supports all countries worldwide (not only India).
+   - WhatsApp participant JIDs are globally formatted in standard E.164-compatible numbers without the plus sign: `<country_code><national_number>@c.us` (e.g. `14155552671@c.us` for US, `447911123456@c.us` for UK, `971501234567@c.us` for UAE, `919409367178@c.us` for India, etc.).
+   - The extractor extracts the digits before `@` and prepends `+` to form the universal international phone number (e.g. `+14155552671`, `+447911123456`, `+919409367178`), ensuring all numbers from any country import seamlessly into mobile address books.
 
 ---
 
