@@ -11,6 +11,7 @@ import {
   Users,
   RefreshCw,
   AlertCircle,
+  Info,
 } from 'lucide-react';
 
 export interface ParticipantSelectorProps {
@@ -177,6 +178,26 @@ export function ParticipantSelector({
           </span>
         </div>
       </div>
+
+      {/* Notice if group only contains admins (e.g. Community parent container) */}
+      {!loading && !error && participants.length > 0 && participants.every((p) => p.isAdmin) && (
+        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-amber-900 text-xs">
+          <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+          <div className="flex-1">
+            <p className="font-semibold text-amber-800">Community Parent Notice</p>
+            <p className="mt-0.5 text-amber-700 leading-relaxed">
+              All {participants.length} participants shown here are Community Admins. In WhatsApp Communities, regular members belong to announcement or discussion subgroups. To extract all contacts, go back and select the corresponding subgroup.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-xs font-semibold underline text-amber-900 hover:text-amber-950 cursor-pointer shrink-0"
+          >
+            Choose Subgroup
+          </button>
+        </div>
+      )}
 
       {/* Error state */}
       {error && (

@@ -101,4 +101,65 @@ describe('GroupList component', () => {
 
     expect(screen.getByText(/No groups found/i)).toBeInTheDocument();
   });
+
+  it('identifies community parents and subgroups and renders appropriate badges', () => {
+    const communityGroups: OpenWAGroup[] = [
+      { id: 'parent@g.us', name: 'Krpriyaboutique 5', linkedParentJID: null },
+      { id: 'child1@g.us', name: 'Krpriyaboutique 5', linkedParentJID: 'parent@g.us' },
+      { id: 'child2@g.us', name: 'KRPRIYA Offers', linkedParentJID: 'parent@g.us' },
+      { id: 'solo@g.us', name: 'Standalone Chat', linkedParentJID: null },
+    ];
+
+    render(
+      <GroupList
+        groups={communityGroups}
+        loading={false}
+        error={null}
+        onSelectGroup={vi.fn()}
+        onRefresh={vi.fn()}
+      />
+    );
+
+    // Parent container badge
+    expect(screen.getByText(/Community Parent \(Admins Only\)/i)).toBeInTheDocument();
+    // Subgroup badges
+    expect(screen.getAllByText('Subgroup')).toHaveLength(2);
+    // Parent attribution
+    expect(screen.getAllByText(/Part of Krpriyaboutique 5/i)).toHaveLength(2);
+  });
+
+  it('filters groups using filter category pills', () => {
+    const communityGroups: OpenWAGroup[] = [
+      { id: 'parent@g.us', name: 'Parent Community', linkedParentJID: null },
+      { id: 'child@g.us', name: 'Child Announcements', linkedParentJID: 'parent@g.us' },
+      { id: 'solo@g.us', name: 'Solo Group', linkedParentJID: null },
+    ];
+
+    render(
+      <GroupList
+        groups={communityGroups}
+        loading={false}
+        error={null}
+        onSelectGroup={vi.fn()}
+        onRefresh={vi.fn()}
+      />
+    );
+
+    // Filter pill buttons exist
+    const withContactsPill = screen.getByRole('button', { name: /With Contacts \(2\)/i });
+    const parentsPill = screen.getByRole('button', { name: /Community Parents \(1\)/i });
+
+    // Click "With Contacts"
+    fireEvent.click(withContactsPill);
+    expect(screen.queryByText('Parent Community')).not.toBeInTheDocument();
+    expect(screen.getByText('Child Announcements')).toBeInTheDocument();
+    expect(screen.getByText('Solo Group')).toBeInTheDocument();
+
+    // Click "Community Parents"
+    fireEvent.click(parentsPill);
+    expect(screen.getByText('Parent Community')).toBeInTheDocument();
+    expect(screen.queryByText('Child Announcements')).not.toBeInTheDocument();
+    expect(screen.queryByText('Solo Group')).not.toBeInTheDocument();
+  });
 });
+

@@ -192,4 +192,28 @@ describe('ParticipantSelector component', () => {
     fireEvent.click(backBtns[1]);
     expect(handleBack).toHaveBeenCalled();
   });
+
+  it('renders Community Parent Notice when all participants are admins', () => {
+    const adminOnlyParticipants: OpenWAParticipant[] = [
+      { id: '111@c.us', number: '111', isAdmin: true, isSuperAdmin: false },
+      { id: '222@c.us', number: '222', isAdmin: true, isSuperAdmin: false },
+    ];
+
+    render(
+      <ParticipantSelector
+        group={mockGroup}
+        participants={adminOnlyParticipants}
+        loading={false}
+        error={null}
+        onBack={vi.fn()}
+        onProceed={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText(/Community Parent Notice/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/All 2 participants shown here are Community Admins/i)
+    ).toBeInTheDocument();
+  });
 });
+
