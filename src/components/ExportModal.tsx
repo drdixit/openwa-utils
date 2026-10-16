@@ -46,29 +46,29 @@ export function ExportModal({
   const previewItems = contactsToExport.slice(0, 4);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
-      <div className="bg-white border border-slate-400 max-w-md w-full shadow-lg">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#282828]/60 backdrop-blur-xs">
+      <div className="bg-[#fbf1c7] border border-[#d5c4a1] rounded-xl max-w-md w-full shadow-2xl overflow-hidden">
         {/* Dialog Title Bar */}
-        <div className="bg-slate-100 border-b border-slate-300 px-4 py-2.5 flex items-center justify-between select-none">
+        <div className="px-5 py-4 bg-[#ebdbb2] border-b border-[#d5c4a1] flex items-center justify-between select-none">
           <div>
-            <h3 className="font-bold text-slate-900 text-sm">Export Contacts to .vcf</h3>
-            <p className="text-[11px] text-slate-500">
+            <h3 className="font-semibold text-[#282828] text-sm">Export Contacts to .vcf</h3>
+            <p className="text-xs text-[#7c6f64] mt-0.5">
               {selectedParticipants.length} contacts selected from &quot;{groupName}&quot;
             </p>
           </div>
           <button
             onClick={onCancel}
-            className="px-1.5 py-0.5 text-xs text-slate-500 hover:text-black border border-transparent hover:border-slate-300 hover:bg-slate-200 cursor-pointer"
+            className="w-6 h-6 flex items-center justify-center rounded-full text-[#7c6f64] hover:text-[#282828] hover:bg-[#d5c4a1] transition-colors cursor-pointer text-xs"
             aria-label="Close modal"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4 space-y-4 text-xs">
+        <div className="p-5 space-y-4 text-xs">
           {/* Prefix Input */}
           <div className="space-y-1.5">
-            <label className="block text-xs font-bold text-slate-800">
+            <label className="block text-xs font-medium text-[#3c3836]">
               Contact Name Prefix:
             </label>
             <input
@@ -76,40 +76,40 @@ export function ExportModal({
               value={prefix}
               onChange={(e) => setPrefix(e.target.value)}
               placeholder="e.g. hello"
-              className="w-full px-2.5 py-1.5 bg-white border border-slate-300 text-xs font-mono focus:outline-hidden focus:border-slate-600"
+              className="w-full px-3 py-1.5 bg-[#f9f5d7] border border-[#d5c4a1] rounded-md text-xs font-mono text-[#282828] placeholder-[#928374] focus:bg-white focus:outline-hidden focus:border-[#7c6f64] transition-colors"
               autoFocus
             />
-            <p className="text-[11px] text-slate-500">
-              Generated names: <span className="font-mono text-slate-800 font-semibold">{prefix.trim() || 'contact'}1</span>, <span className="font-mono text-slate-800 font-semibold">{prefix.trim() || 'contact'}2</span>, etc.
+            <p className="text-xs text-[#7c6f64]">
+              Generated names: <span className="font-mono text-[#282828] font-semibold">{prefix.trim() || 'contact'}1</span>, <span className="font-mono text-[#282828] font-semibold">{prefix.trim() || 'contact'}2</span>, etc.
             </p>
           </div>
 
           {/* Mini Spreadsheet Preview */}
           <div className="space-y-1.5">
-            <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
+            <div className="flex items-center justify-between text-xs text-[#7c6f64] font-medium">
               <span>Preview ({selectedParticipants.length} total)</span>
-              <span className="font-mono text-slate-500">Standard vCard 3.0</span>
+              <span className="font-mono text-[#928374]">Standard vCard 3.0</span>
             </div>
 
-            <div className="border border-slate-300 bg-white">
+            <div className="border border-[#d5c4a1] rounded-lg bg-[#f9f5d7] overflow-hidden">
               <table className="w-full text-left text-xs border-collapse">
-                <thead className="bg-slate-100 border-b border-slate-300 text-slate-700 font-semibold">
+                <thead className="bg-[#ebdbb2] border-b border-[#d5c4a1] text-[#7c6f64] font-medium">
                   <tr>
-                    <th className="py-1 px-2 border-r border-slate-200 w-10 text-center font-mono">#</th>
-                    <th className="py-1 px-2 border-r border-slate-200">Contact Name</th>
-                    <th className="py-1 px-2 font-mono">Phone Number</th>
+                    <th className="py-1.5 px-3 border-r border-[#d5c4a1]/70 w-10 text-center font-mono">#</th>
+                    <th className="py-1.5 px-3 border-r border-[#d5c4a1]/70">Contact Name</th>
+                    <th className="py-1.5 px-3 font-mono">Phone Number</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 font-mono text-[11px]">
+                <tbody className="divide-y divide-[#ebdbb2] font-mono text-xs">
                   {previewItems.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50">
-                      <td className="py-1 px-2 border-r border-slate-200 text-center text-slate-400">
+                    <tr key={idx} className="hover:bg-[#f2e5bc]">
+                      <td className="py-1.5 px-3 border-r border-[#ebdbb2] text-center text-[#928374]">
                         {idx + 1}
                       </td>
-                      <td className="py-1 px-2 border-r border-slate-200 font-semibold text-slate-800">
+                      <td className="py-1.5 px-3 border-r border-[#ebdbb2] font-semibold text-[#282828]">
                         {item.name}
                       </td>
-                      <td className="py-1 px-2 text-slate-700">
+                      <td className="py-1.5 px-3 text-[#3c3836]">
                         {item.phone}
                       </td>
                     </tr>
@@ -117,7 +117,7 @@ export function ExportModal({
                 </tbody>
               </table>
               {selectedParticipants.length > 4 && (
-                <div className="p-1.5 text-[11px] text-center text-slate-500 bg-slate-50 border-t border-slate-200 font-mono">
+                <div className="p-2 text-xs text-center text-[#7c6f64] bg-[#ebdbb2]/50 border-t border-[#d5c4a1] font-mono">
                   ...and {selectedParticipants.length - 4} more contacts
                 </div>
               )}
@@ -125,11 +125,11 @@ export function ExportModal({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
+          <div className="flex items-center justify-end gap-2 pt-3 border-t border-[#d5c4a1]">
             <button
               type="button"
               onClick={onCancel}
-              className="px-3 py-1.5 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-medium text-[#3c3836] bg-[#ebdbb2] hover:bg-[#d5c4a1] border border-[#d5c4a1] rounded-md transition-colors cursor-pointer"
             >
               Cancel
             </button>
@@ -137,7 +137,7 @@ export function ExportModal({
               type="button"
               onClick={handleDownload}
               disabled={selectedParticipants.length === 0}
-              className="px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 disabled:opacity-50 cursor-pointer"
+              className="px-4 py-1.5 text-xs font-medium text-[#fbf1c7] bg-[#3c3836] hover:bg-[#282828] rounded-md transition-colors disabled:opacity-50 cursor-pointer"
             >
               Download .vcf File
             </button>
