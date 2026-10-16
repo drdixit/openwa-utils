@@ -161,5 +161,33 @@ describe('GroupList component', () => {
     expect(screen.queryByText('Child Announcements')).not.toBeInTheDocument();
     expect(screen.queryByText('Solo Group')).not.toBeInTheDocument();
   });
-});
 
+  it('sorts community parents to appear after all other groups in All view', () => {
+    const { container } = render(
+      <GroupList
+        groups={[
+          { id: 'parent@g.us', name: 'ZZZ Parent should be last', linkedParentJID: null },
+          { id: 'child@g.us', name: 'AAA Child Group', linkedParentJID: 'parent@g.us' },
+          { id: 'solo@g.us', name: 'MMM Solo Group', linkedParentJID: null },
+        ]}
+        loading={false}
+        error={null}
+        onSelectGroup={vi.fn()}
+        onRefresh={vi.fn()}
+      />
+    );
+
+    // Each group card has an h3 with the group name — use that for positional ordering
+    const headings = Array.from(container.querySelectorAll('h3')).map(
+      (el) => el.textContent || ''
+    );
+
+    const parentIdx = headings.findIndex((t) => t === 'ZZZ Parent should be last');
+    const childIdx = headings.findIndex((t) => t === 'AAA Child Group');
+    const soloIdx = headings.findIndex((t) => t === 'MMM Solo Group');
+
+    // Parent must be after both the child subgroup and the standalone solo group
+    expect(parentIdx).toBeGreaterThan(childIdx);
+    expect(parentIdx).toBeGreaterThan(soloIdx);
+  });
+});

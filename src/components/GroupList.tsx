@@ -64,6 +64,12 @@ export function GroupList({
       const nameMatch = (g.name || 'Unnamed Group').toLowerCase().includes(query);
       const parentName = g.linkedParentJID ? (parentNameMap.get(g.linkedParentJID) || '').toLowerCase() : '';
       return nameMatch || parentName.includes(query) || g.id.toLowerCase().includes(query);
+    })
+    // Community Parents always appear at the bottom
+    .sort((a, b) => {
+      const aIsParent = parentIdSet.has(a.id) ? 1 : 0;
+      const bIsParent = parentIdSet.has(b.id) ? 1 : 0;
+      return aIsParent - bIsParent;
     });
   }, [groups, parentIdSet, parentNameMap, filterCategory, search]);
 
