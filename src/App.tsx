@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
 import { OpenWAGroup, OpenWAParticipant } from './types/openwa';
-import { fetchGroups, fetchGroupDetails } from './services/openwa';
+import { fetchGroups, fetchGroupDetails, OpenWAConfig, DEFAULT_OPENWA_CONFIG } from './services/openwa';
+import { ConfigBar } from './components/ConfigBar';
 import { GroupList } from './components/GroupList';
 import { ParticipantSelector } from './components/ParticipantSelector';
 import { ExportModal } from './components/ExportModal';
 
 export function App() {
+  const [config, setConfig] = useState<OpenWAConfig>(DEFAULT_OPENWA_CONFIG);
   const [step, setStep] = useState<'groups' | 'contacts'>('groups');
   const [groups, setGroups] = useState<OpenWAGroup[]>([]);
   const [loadingGroups, setLoadingGroups] = useState(false);
@@ -19,11 +21,11 @@ export function App() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [selectedParticipants, setSelectedParticipants] = useState<OpenWAParticipant[]>([]);
 
-  const loadGroups = useCallback(async () => {
+  const loadGroups = useCallback(async (activeConfig: OpenWAConfig = config) => {
     setLoadingGroups(true);
     setGroupsError(null);
     try {
-      const data = await fetchGroups();
+      const data = await fetchGroups(activeConfig);
       setGroups(data);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Unknown error loading groups';
@@ -31,11 +33,20 @@ export function App() {
     } finally {
       setLoadingGroups(false);
     }
-  }, []);
+  }, [config]);
 
   useEffect(() => {
-    loadGroups();
-  }, [loadGroups]);
+    loadGroups(config);
+  }, []);
+
+  const handleConfigSave = (newConfig: OpenWAConfig) => {
+    setConfig(newConfig);
+    setStep('groups');
+    setSelectedGroup(null);
+    setParticipants([]);
+    setSelectedParticipants([]);
+    loadGroups(newConfig);
+  };
 
   const handleSelectGroup = async (group: OpenWAGroup) => {
     setSelectedGroup(group);
@@ -43,7 +54,8 @@ export function App() {
     setLoadingParticipants(true);
     setParticipantsError(null);
     try {
-      const detail = await fetchGroupDetails(group.id);
+      const detail = await fetchGroupDetails(group.id, config);
+
       setParticipants(detail.participants || []);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to fetch group participants';
@@ -77,8 +89,15 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-[#fbf1c7] text-[#3c3836] pb-16 font-sans">
+      {/* Top Configuration Bar */}
+      <ConfigBar
+        config={config}
+        onSave={handleConfigSave}
+        isLoading={loadingGroups}
+      />
+
       {/* Main Content Area - directly showing groups */}
-      <main className="max-w-5xl mx-auto px-4 py-8">
+      <main className="max-w-5xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
         {step === 'groups' && (
           <GroupList
             groups={groups}

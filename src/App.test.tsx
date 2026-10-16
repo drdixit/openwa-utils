@@ -74,4 +74,41 @@ describe('App End-to-End Extraction Workflow', () => {
       expect(screen.queryByPlaceholderText(/e\.g\. hello/i)).toBeNull();
     });
   });
+
+  it('allows user to edit connection config in top bar and reloads groups', async () => {
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Alpha Traders')).toBeInTheDocument();
+    });
+
+    // Initial fetchGroups call was made with default config
+    expect(openwaService.fetchGroups).toHaveBeenCalledWith(
+      expect.objectContaining({
+        apiUrl: 'http://localhost:2785',
+        apiKey: 'owa_k1_7a62176801cde43df4e13abff974f8a1efe1771e9777078ae22a92809d87202c',
+        sessionId: 'a9a7f860-5961-48e3-908c-66880d8e6197',
+      })
+    );
+
+    // Click Edit button
+    fireEvent.click(screen.getByRole('button', { name: /Edit/i }));
+
+    // Change session ID
+    const sessionInput = screen.getByLabelText(/Session ID/i);
+    fireEvent.change(sessionInput, { target: { value: 'custom-session-uuid-123' } });
+
+    // Click Save button
+    fireEvent.click(screen.getByRole('button', { name: /Save/i }));
+
+    // Verify fetchGroups is called with the new session ID
+    await waitFor(() => {
+      expect(openwaService.fetchGroups).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sessionId: 'custom-session-uuid-123',
+        })
+      );
+    });
+  });
 });
+
