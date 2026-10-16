@@ -25,4 +25,9 @@ describe('formatInternationalPhone', () => {
   it('handles JIDs with other domains like @lid or @s.whatsapp.net', () => {
     expect(formatInternationalPhone('919409367178@s.whatsapp.net')).toBe('+919409367178');
   });
+
+  it('strips multi-device colon suffix from JID', () => {
+    expect(formatInternationalPhone('919409367178:1@c.us')).toBe('+919409367178');
+    expect(formatInternationalPhone('14155552671:2@s.whatsapp.net')).toBe('+14155552671');
+  });
 });

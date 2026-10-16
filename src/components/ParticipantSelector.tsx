@@ -58,15 +58,30 @@ export function ParticipantSelector({
     );
   }, [currentParticipants, search]);
 
-  const allSelected =
-    participants.length > 0 && selectedIds.size === participants.length;
+  const visibleParticipants = filteredParticipants;
+  const allVisibleSelected =
+    visibleParticipants.length > 0 &&
+    visibleParticipants.every((p) => selectedIds.has(p.id));
+
   const isNoneSelected = selectedIds.size === 0;
 
   const handleToggleSelectAll = () => {
-    if (allSelected) {
-      setSelectedIds(new Set());
+    if (allVisibleSelected) {
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        for (const p of visibleParticipants) {
+          next.delete(p.id);
+        }
+        return next;
+      });
     } else {
-      setSelectedIds(new Set(participants.map((p) => p.id)));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        for (const p of visibleParticipants) {
+          next.add(p.id);
+        }
+        return next;
+      });
     }
   };
 
@@ -116,10 +131,10 @@ export function ParticipantSelector({
           <button
             type="button"
             onClick={handleToggleSelectAll}
-            disabled={loading || participants.length === 0}
+            disabled={loading || visibleParticipants.length === 0}
             className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
           >
-            {allSelected ? (
+            {allVisibleSelected ? (
               <>
                 <CheckSquare className="w-4 h-4 text-emerald-600" />
                 Deselect All
@@ -165,9 +180,18 @@ export function ParticipantSelector({
 
       {/* Error state */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-700 text-sm">
-          <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
-          <p>{error}</p>
+        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between gap-3 text-red-700 text-sm">
+          <div className="flex items-center gap-3">
+            <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
+            <p>{error}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onBack}
+            className="text-xs font-semibold underline hover:text-red-900 cursor-pointer shrink-0"
+          >
+            Back to Groups
+          </button>
         </div>
       )}
 
@@ -179,12 +203,36 @@ export function ParticipantSelector({
         </div>
       )}
 
-      {/* Empty participants */}
+      {/* Empty search results */}
+      {!loading && !error && filteredParticipants.length === 0 && participants.length > 0 && (
+        <div className="py-8 text-center bg-white border border-dashed border-slate-200 rounded-xl p-6">
+          <p className="text-sm text-slate-500 font-medium">
+            No participants matching &quot;{search}&quot;
+          </p>
+          <button
+            type="button"
+            onClick={() => setSearch('')}
+            className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 mt-1 cursor-pointer"
+          >
+            Clear Search
+          </button>
+        </div>
+      )}
+
+      {/* Empty participants in group */}
       {!loading && !error && participants.length === 0 && (
         <div className="py-12 text-center bg-white border border-dashed border-slate-200 rounded-2xl p-8">
           <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
           <h3 className="text-base font-semibold text-slate-700">No participants found</h3>
-          <p className="text-sm text-slate-400 mt-1">This group does not have any member numbers.</p>
+          <p className="text-sm text-slate-400 mt-1 mb-4">This group does not have any member numbers.</p>
+          <button
+            type="button"
+            onClick={onBack}
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Groups
+          </button>
         </div>
       )}
 

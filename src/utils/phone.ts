@@ -10,8 +10,9 @@
 export function formatInternationalPhone(raw: string): string {
   if (!raw) return '';
 
-  // If input contains '@', take only the user portion before '@'
-  const userPart = raw.includes('@') ? raw.split('@')[0] : raw;
+  // If input contains '@', take only the user portion before '@', and strip any device suffix (e.g. :1)
+  const atPart = raw.includes('@') ? raw.split('@')[0] : raw;
+  const userPart = atPart.split(':')[0];
 
   // Extract digits only
   const digits = userPart.replace(/\D/g, '');

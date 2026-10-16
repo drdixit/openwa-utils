@@ -32,7 +32,8 @@ describe('generateVcf', () => {
 });
 
 describe('downloadVcf', () => {
-  it('creates an anchor element and triggers download', () => {
+  it('creates an anchor element, triggers download, and delays URL revocation', () => {
+    vi.useFakeTimers();
     const createObjectURLMock = vi.fn().mockReturnValue('blob:mock-url');
     const revokeObjectURLMock = vi.fn();
     window.URL.createObjectURL = createObjectURLMock;
@@ -51,6 +52,12 @@ describe('downloadVcf', () => {
     downloadVcf('contacts.vcf', 'BEGIN:VCARD...');
     expect(createObjectURLMock).toHaveBeenCalled();
     expect(clickSpy).toHaveBeenCalled();
+    // Should NOT be revoked synchronously
+    expect(revokeObjectURLMock).not.toHaveBeenCalled();
+
+    // Advances timers
+    vi.advanceTimersByTime(1000);
     expect(revokeObjectURLMock).toHaveBeenCalledWith('blob:mock-url');
+    vi.useRealTimers();
   });
 });

@@ -37,7 +37,8 @@ export function ExportModal({
       .replace(/[^a-zA-Z0-9_-]/g, '_')
       .slice(0, 30);
     const cleanPrefix = prefix.trim() || 'contact';
-    const filename = `${sanitizedGroup}_${cleanPrefix}.vcf`;
+    const safePrefix = cleanPrefix.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const filename = `${sanitizedGroup}_${safePrefix}.vcf`;
 
     downloadVcf(filename, vcfContent);
     onExportComplete();

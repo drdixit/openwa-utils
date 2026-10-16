@@ -103,4 +103,29 @@ describe('ExportModal component', () => {
 
     expect(handleCancel).toHaveBeenCalled();
   });
+
+  it('sanitizes special characters in prefix when creating filename', () => {
+    const downloadSpy = vi.spyOn(vcfUtils, 'downloadVcf').mockImplementation(() => {});
+
+    render(
+      <ExportModal
+        isOpen={true}
+        selectedParticipants={mockSelected}
+        groupName="Test Group"
+        onCancel={vi.fn()}
+        onExportComplete={vi.fn()}
+      />
+    );
+
+    const prefixInput = screen.getByPlaceholderText(/e\.g\. hello/i);
+    fireEvent.change(prefixInput, { target: { value: 'client/2026:special' } });
+
+    const downloadBtn = screen.getByRole('button', { name: /Download \.vcf/i });
+    fireEvent.click(downloadBtn);
+
+    expect(downloadSpy).toHaveBeenCalledWith(
+      expect.stringMatching(/Test_Group_client_2026_special\.vcf/),
+      expect.any(String)
+    );
+  });
 });

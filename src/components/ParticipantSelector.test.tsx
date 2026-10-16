@@ -127,8 +127,69 @@ describe('ParticipantSelector component', () => {
       />
     );
 
-    const backBtn = screen.getByRole('button', { name: /Back/i });
+    const backBtn = screen.getByRole('button', { name: /Back to groups/i });
     fireEvent.click(backBtn);
+    expect(handleBack).toHaveBeenCalled();
+  });
+
+  it('renders empty search match message when search query does not match any member', () => {
+    render(
+      <ParticipantSelector
+        group={mockGroup}
+        participants={mockParticipants}
+        loading={false}
+        error={null}
+        onBack={vi.fn()}
+        onProceed={vi.fn()}
+      />
+    );
+
+    const searchInput = screen.getByPlaceholderText(/Search phone number/i);
+    fireEvent.change(searchInput, { target: { value: '9999999999' } });
+
+    expect(screen.getByText(/No participants matching/i)).toBeInTheDocument();
+  });
+
+  it('toggles only filtered participants when search query is active', () => {
+    render(
+      <ParticipantSelector
+        group={mockGroup}
+        participants={mockParticipants}
+        loading={false}
+        error={null}
+        onBack={vi.fn()}
+        onProceed={vi.fn()}
+      />
+    );
+
+    // Filter to only US number (+14155552671)
+    const searchInput = screen.getByPlaceholderText(/Search phone number/i);
+    fireEvent.change(searchInput, { target: { value: '1415' } });
+
+    // Deselect filtered participant
+    const selectAllBtn = screen.getByText(/Deselect All/i);
+    fireEvent.click(selectAllBtn);
+
+    // Total selected should now be 2 (the other 2 unfiltered participants remain selected)
+    expect(screen.getByText(/2 of 3 selected/i)).toBeInTheDocument();
+  });
+
+  it('renders Back to Groups button in empty participants state', () => {
+    const handleBack = vi.fn();
+    render(
+      <ParticipantSelector
+        group={mockGroup}
+        participants={[]}
+        loading={false}
+        error={null}
+        onBack={handleBack}
+        onProceed={vi.fn()}
+      />
+    );
+
+    expect(screen.getByText(/No participants found/i)).toBeInTheDocument();
+    const backBtns = screen.getAllByRole('button', { name: /Back to Groups/i });
+    fireEvent.click(backBtns[1]);
     expect(handleBack).toHaveBeenCalled();
   });
 });
