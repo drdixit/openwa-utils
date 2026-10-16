@@ -4,11 +4,7 @@ import { formatInternationalPhone } from '../utils/phone';
 import {
   ArrowLeft,
   ArrowRight,
-  CheckSquare,
-  Square,
   Search,
-  ShieldAlert,
-  Users,
   RefreshCw,
   AlertCircle,
   Info,
@@ -104,95 +100,84 @@ export function ParticipantSelector({
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Navigation & Info */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
+    <div className="space-y-4">
+      {/* Top Header & Navigation */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-300 pb-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={onBack}
-            className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors cursor-pointer"
+            className="px-2.5 py-1 text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer flex items-center gap-1"
             aria-label="Back to groups"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Groups
           </button>
           <div>
-            <div className="flex items-center gap-2">
-              <h2 className="text-xl font-bold text-slate-800 truncate max-w-md">
-                {group.name || 'WhatsApp Group'}
-              </h2>
-            </div>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Select contacts to extract and export
+            <h2 className="text-base font-bold text-slate-900 truncate max-w-lg leading-tight">
+              {group.name || 'WhatsApp Group'}
+            </h2>
+            <p className="text-[11px] text-slate-500 font-mono">
+              {group.id}
             </p>
           </div>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={handleToggleSelectAll}
             disabled={loading || visibleParticipants.length === 0}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+            className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-100 transition-colors disabled:opacity-50 cursor-pointer"
           >
-            {allVisibleSelected ? (
-              <>
-                <CheckSquare className="w-4 h-4 text-emerald-600" />
-                Deselect All
-              </>
-            ) : (
-              <>
-                <Square className="w-4 h-4 text-slate-400" />
-                Select All
-              </>
-            )}
+            {allVisibleSelected ? 'Deselect All' : 'Select All'}
           </button>
 
           <button
             type="button"
             onClick={handleNext}
             disabled={loading || isNoneSelected}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer shadow-sm"
+            className="inline-flex items-center gap-1.5 px-4 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
           >
             Next ({selectedIds.size})
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>
 
-      {/* Filter and stats row */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-3 border border-slate-200 rounded-xl shadow-xs">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      {/* Spreadsheet Search Toolbar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-100 p-2 border border-slate-300 text-xs">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search phone number..."
-            className="w-full pl-9 pr-3 py-1.5 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-hidden focus:ring-1 focus:ring-emerald-500 transition-all"
+            className="w-full pl-8 pr-3 py-1 text-xs bg-white border border-slate-300 focus:outline-hidden focus:border-slate-600 font-sans"
           />
         </div>
-        <div className="text-xs font-medium text-slate-600 px-2 shrink-0">
+        <div className="text-xs font-medium text-slate-700 font-mono px-1 shrink-0">
           <span className="font-bold text-slate-900">
             {selectedIds.size} of {participants.length} selected
           </span>
         </div>
       </div>
 
-      {/* Notice if group only contains admins (e.g. Community parent container) */}
+      {/* Community Parent Notice */}
       {!loading && !error && participants.length > 0 && participants.every((p) => p.isAdmin) && (
-        <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3 text-amber-900 text-xs">
-          <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+        <div className="p-3 bg-amber-50 border border-amber-300 flex items-start gap-2.5 text-amber-900 text-xs">
+          <Info className="w-4 h-4 shrink-0 mt-0.5 text-amber-700" />
           <div className="flex-1">
-            <p className="font-semibold text-amber-800">Community Parent Notice</p>
-            <p className="mt-0.5 text-amber-700 leading-relaxed">
+            <p className="font-bold">Community Parent Notice</p>
+            <p className="mt-0.5 text-amber-800">
               All {participants.length} participants shown here are Community Admins. In WhatsApp Communities, regular members belong to announcement or discussion subgroups. To extract all contacts, go back and select the corresponding subgroup.
             </p>
           </div>
           <button
             type="button"
             onClick={onBack}
-            className="text-xs font-semibold underline text-amber-900 hover:text-amber-950 cursor-pointer shrink-0"
+            className="text-xs font-semibold underline text-amber-950 hover:text-black cursor-pointer shrink-0"
           >
             Choose Subgroup
           </button>
@@ -201,15 +186,15 @@ export function ParticipantSelector({
 
       {/* Error state */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-center justify-between gap-3 text-red-700 text-sm">
-          <div className="flex items-center gap-3">
-            <AlertCircle className="w-5 h-5 shrink-0 text-red-500" />
+        <div className="p-3 bg-red-50 border border-red-300 flex items-center justify-between gap-3 text-red-800 text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
             <p>{error}</p>
           </div>
           <button
             type="button"
             onClick={onBack}
-            className="text-xs font-semibold underline hover:text-red-900 cursor-pointer shrink-0"
+            className="text-xs font-semibold underline hover:text-red-950 cursor-pointer shrink-0"
           >
             Back to Groups
           </button>
@@ -218,22 +203,22 @@ export function ParticipantSelector({
 
       {/* Loading state */}
       {loading && (
-        <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
-          <RefreshCw className="w-8 h-8 animate-spin text-emerald-600" />
-          <p className="text-sm font-medium">Loading group participants...</p>
+        <div className="py-12 border border-slate-300 bg-white flex flex-col items-center justify-center gap-2 text-slate-500 text-xs">
+          <RefreshCw className="w-5 h-5 animate-spin text-slate-600" />
+          <p>Loading group participants...</p>
         </div>
       )}
 
       {/* Empty search results */}
       {!loading && !error && filteredParticipants.length === 0 && participants.length > 0 && (
-        <div className="py-8 text-center bg-white border border-dashed border-slate-200 rounded-xl p-6">
-          <p className="text-sm text-slate-500 font-medium">
+        <div className="py-8 border border-slate-300 bg-white text-center p-6 text-xs text-slate-500">
+          <p className="font-semibold text-slate-700">
             No participants matching &quot;{search}&quot;
           </p>
           <button
             type="button"
             onClick={() => setSearch('')}
-            className="text-xs font-semibold text-emerald-600 hover:text-emerald-700 mt-1 cursor-pointer"
+            className="text-xs font-semibold text-blue-700 hover:underline mt-1.5 cursor-pointer"
           >
             Clear Search
           </button>
@@ -242,57 +227,79 @@ export function ParticipantSelector({
 
       {/* Empty participants in group */}
       {!loading && !error && participants.length === 0 && (
-        <div className="py-12 text-center bg-white border border-dashed border-slate-200 rounded-2xl p-8">
-          <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-semibold text-slate-700">No participants found</h3>
-          <p className="text-sm text-slate-400 mt-1 mb-4">This group does not have any member numbers.</p>
+        <div className="py-12 border border-slate-300 bg-white text-center p-8 text-xs text-slate-500">
+          <p className="font-semibold text-slate-700 text-sm">No participants found</p>
+          <p className="mt-1 mb-3">This group does not have any member numbers.</p>
           <button
             type="button"
             onClick={onBack}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors cursor-pointer"
+            className="px-3 py-1.5 text-xs font-semibold bg-slate-100 border border-slate-300 hover:bg-slate-200 text-slate-800 cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4" />
             Back to Groups
           </button>
         </div>
       )}
 
-      {/* Participant List */}
+      {/* Participant Spreadsheet Table */}
       {!loading && !error && filteredParticipants.length > 0 && (
-        <div className="bg-white border border-slate-200 rounded-xl divide-y divide-slate-100 shadow-xs max-h-[500px] overflow-y-auto">
-          {filteredParticipants.map((p) => {
-            const isChecked = selectedIds.has(p.id);
-            return (
-              <label
-                key={p.id}
-                className={`flex items-center justify-between px-4 py-3 hover:bg-slate-50 transition-colors cursor-pointer ${
-                  isChecked ? 'bg-emerald-50/30' : ''
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => handleToggleParticipant(p.id)}
-                    className="w-4 h-4 text-emerald-600 rounded-sm border-slate-300 focus:ring-emerald-500 cursor-pointer"
-                  />
-                  <div className="min-w-0">
-                    <p className="font-mono text-sm font-semibold text-slate-800">
+        <div className="border border-slate-300 bg-white overflow-x-auto max-h-[550px] overflow-y-auto shadow-2xs">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="bg-slate-100 border-b border-slate-300 text-slate-700 font-semibold select-none sticky top-0 z-10">
+              <tr>
+                <th className="py-2 px-3 border-r border-slate-200 w-12 text-center text-[11px]">
+                  Pick
+                </th>
+                <th className="py-2 px-3 border-r border-slate-200 w-12 text-center font-mono">#</th>
+                <th className="py-2 px-3 border-r border-slate-200">Phone Number (E.164)</th>
+                <th className="py-2 px-3 border-r border-slate-200 w-28">Role</th>
+                <th className="py-2 px-3 font-mono">WhatsApp ID</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200 font-sans">
+              {filteredParticipants.map((p, idx) => {
+                const isChecked = selectedIds.has(p.id);
+                return (
+                  <tr
+                    key={p.id}
+                    onClick={() => handleToggleParticipant(p.id)}
+                    className={`hover:bg-sky-50 cursor-pointer transition-colors ${
+                      isChecked ? 'bg-sky-50/60 font-medium' : idx % 2 === 1 ? 'bg-slate-50/50' : 'bg-white'
+                    }`}
+                  >
+                    <td
+                      className="py-1.5 px-3 border-r border-slate-200 text-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => handleToggleParticipant(p.id)}
+                        className="w-3.5 h-3.5 rounded-none cursor-pointer"
+                      />
+                    </td>
+                    <td className="py-1.5 px-3 border-r border-slate-200 text-center font-mono text-slate-400">
+                      {idx + 1}
+                    </td>
+                    <td className="py-1.5 px-3 border-r border-slate-200 font-mono text-xs font-semibold text-slate-900">
                       {p.formattedPhone}
-                    </p>
-                    <p className="text-xs text-slate-400 truncate">{p.id}</p>
-                  </div>
-                </div>
-
-                {p.isAdmin && (
-                  <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                    <ShieldAlert className="w-3 h-3" />
-                    Admin
-                  </span>
-                )}
-              </label>
-            );
-          })}
+                    </td>
+                    <td className="py-1.5 px-3 border-r border-slate-200">
+                      {p.isAdmin ? (
+                        <span className="inline-block px-1.5 py-0.2 bg-emerald-100 text-emerald-900 border border-emerald-300 font-semibold text-[11px]">
+                          Admin
+                        </span>
+                      ) : (
+                        <span className="text-slate-500">Member</span>
+                      )}
+                    </td>
+                    <td className="py-1.5 px-3 font-mono text-[11px] text-slate-500">
+                      {p.id}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

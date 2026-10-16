@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import { OpenWAGroup } from '../types/openwa';
-import { Search, RefreshCw, Users, AlertCircle, ArrowRight, Network, Megaphone } from 'lucide-react';
+import { Search, RefreshCw, AlertCircle } from 'lucide-react';
 
 export type GroupFilterCategory = 'all' | 'with-contacts' | 'parents';
 
@@ -74,47 +74,48 @@ export function GroupList({
   }, [groups, parentIdSet, parentNameMap, filterCategory, search]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="space-y-4">
+      {/* Excel Sheet Title Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-300 pb-3">
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Select a WhatsApp Group</h2>
-          <p className="text-sm text-slate-500">
-            Pick a group to view participants and export contacts to .vcf
+          <h2 className="text-lg font-bold text-slate-900 tracking-tight">Select a WhatsApp Group</h2>
+          <p className="text-xs text-slate-500">
+            Select a row to inspect contacts and export to .vcf
           </p>
         </div>
         <button
           onClick={onRefresh}
           disabled={loading}
-          className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 hover:border-slate-300 transition-colors disabled:opacity-50 cursor-pointer shadow-xs"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 border border-slate-300 hover:bg-slate-200 transition-colors disabled:opacity-50 cursor-pointer"
         >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin text-emerald-600' : ''}`} />
-          Refresh Groups
+          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-slate-700' : ''}`} />
+          Refresh
         </button>
       </div>
 
-      {/* Search Input and Filter Pills */}
-      <div className="space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      {/* Spreadsheet Toolbar: Search & View Tabs */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-100 p-2 border border-slate-300">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search groups by name or parent community..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all shadow-xs"
+            className="w-full pl-8 pr-3 py-1 text-xs bg-white border border-slate-300 focus:outline-hidden focus:border-slate-600 font-sans"
           />
         </div>
 
-        {/* Filter Pills */}
+        {/* View Tabs */}
         {!loading && groups.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-medium">
+          <div className="flex items-center gap-1 text-xs">
             <button
               type="button"
               onClick={() => setFilterCategory('all')}
-              className={`px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`px-2.5 py-1 border transition-colors cursor-pointer ${
                 filterCategory === 'all'
-                  ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-slate-800 text-white border-slate-800 font-semibold'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
               }`}
             >
               All Groups ({counts.all})
@@ -122,26 +123,24 @@ export function GroupList({
             <button
               type="button"
               onClick={() => setFilterCategory('with-contacts')}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+              className={`px-2.5 py-1 border transition-colors cursor-pointer ${
                 filterCategory === 'with-contacts'
-                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
-                  : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                  ? 'bg-slate-800 text-white border-slate-800 font-semibold'
+                  : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
               }`}
             >
-              <Users className="w-3.5 h-3.5" />
               With Contacts ({counts.withContacts})
             </button>
             {counts.parents > 0 && (
               <button
                 type="button"
                 onClick={() => setFilterCategory('parents')}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border transition-all cursor-pointer ${
+                className={`px-2.5 py-1 border transition-colors cursor-pointer ${
                   filterCategory === 'parents'
-                    ? 'bg-amber-600 text-white border-amber-600 shadow-xs'
-                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                    ? 'bg-slate-800 text-white border-slate-800 font-semibold'
+                    : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'
                 }`}
               >
-                <Network className="w-3.5 h-3.5" />
                 Community Parents ({counts.parents})
               </button>
             )}
@@ -151,106 +150,117 @@ export function GroupList({
 
       {/* Error Banner */}
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-red-700 text-sm">
-          <AlertCircle className="w-5 h-5 shrink-0 mt-0.5 text-red-500" />
+        <div className="p-3 bg-red-50 border border-red-300 flex items-start gap-2.5 text-red-800 text-xs font-mono">
+          <AlertCircle className="w-4 h-4 shrink-0 text-red-600 mt-0.5" />
           <div className="flex-1">
-            <p className="font-semibold">Unable to load groups</p>
-            <p className="text-red-600 mt-0.5">{error}</p>
+            <p className="font-bold">Error loading groups:</p>
+            <p className="mt-0.5">{error}</p>
           </div>
           <button
             onClick={onRefresh}
-            className="text-xs font-semibold underline hover:text-red-900 cursor-pointer"
+            className="underline font-semibold hover:text-red-950 cursor-pointer"
           >
-            Try Again
+            Retry
           </button>
         </div>
       )}
 
-      {/* Loading Skeleton */}
+      {/* Loading State */}
       {loading && (
-        <div className="py-12 flex flex-col items-center justify-center gap-3 text-slate-500">
-          <RefreshCw className="w-8 h-8 animate-spin text-emerald-600" />
-          <p className="text-sm font-medium">Loading groups from OpenWA...</p>
+        <div className="py-12 border border-slate-300 bg-white flex flex-col items-center justify-center gap-2 text-slate-500 text-xs">
+          <RefreshCw className="w-5 h-5 animate-spin text-slate-600" />
+          <p>Loading groups from OpenWA...</p>
         </div>
       )}
 
-      {/* Empty States */}
+      {/* Empty State */}
       {!loading && !error && filteredGroups.length === 0 && (
-        <div className="py-12 text-center bg-white border border-dashed border-slate-200 rounded-2xl p-8">
-          <Users className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base font-semibold text-slate-700">No groups found</h3>
-          <p className="text-sm text-slate-400 mt-1">
+        <div className="py-12 border border-slate-300 bg-white text-center p-6 text-xs text-slate-500">
+          <p className="font-semibold text-slate-700">No groups found</p>
+          <p className="mt-1">
             {search
-              ? 'Try adjusting your search query or filter selection.'
+              ? 'No matching records found for this search filter.'
               : 'No WhatsApp groups found in this category.'}
           </p>
         </div>
       )}
 
-      {/* Group Grid */}
+      {/* Excel Spreadsheet Table */}
       {!loading && !error && filteredGroups.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {filteredGroups.map((group) => {
-            const isParent = parentIdSet.has(group.id);
-            const isSubgroup = Boolean(group.linkedParentJID);
-            const parentName = group.linkedParentJID ? parentNameMap.get(group.linkedParentJID) : null;
+        <div className="border border-slate-300 bg-white overflow-x-auto shadow-2xs">
+          <table className="w-full text-left text-xs border-collapse">
+            <thead className="bg-slate-100 border-b border-slate-300 text-slate-700 font-semibold select-none">
+              <tr>
+                <th className="py-2 px-3 border-r border-slate-200 w-12 text-center font-mono">#</th>
+                <th className="py-2 px-3 border-r border-slate-200">Group Name</th>
+                <th className="py-2 px-3 border-r border-slate-200 w-52">Type</th>
+                <th className="py-2 px-3 border-r border-slate-200">Community Parent</th>
+                <th className="py-2 px-3 border-r border-slate-200 font-mono">WhatsApp ID</th>
+                <th className="py-2 px-3 text-center w-24">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-200">
+              {filteredGroups.map((group, idx) => {
+                const isParent = parentIdSet.has(group.id);
+                const isSubgroup = Boolean(group.linkedParentJID);
+                const parentName = group.linkedParentJID ? parentNameMap.get(group.linkedParentJID) : null;
 
-            return (
-              <button
-                key={group.id}
-                onClick={() => onSelectGroup(group)}
-                className={`group text-left p-4 bg-white border rounded-xl transition-all flex items-center justify-between cursor-pointer ${
-                  isParent
-                    ? 'border-amber-200/80 hover:border-amber-400 hover:shadow-md'
-                    : 'border-slate-200 hover:border-emerald-400 hover:shadow-md'
-                }`}
-              >
-                <div className="flex items-center gap-3.5 min-w-0 pr-2">
-                  <div
-                    className={`w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-bold text-sm border group-hover:scale-105 transition-transform ${
-                      isParent
-                        ? 'bg-amber-50 text-amber-700 border-amber-200'
-                        : isSubgroup
-                        ? 'bg-blue-50 text-blue-700 border-blue-200'
-                        : 'bg-emerald-50 text-emerald-600 border-emerald-100'
+                return (
+                  <tr
+                    key={group.id}
+                    onClick={() => onSelectGroup(group)}
+                    className={`hover:bg-sky-50 cursor-pointer transition-colors ${
+                      isParent ? 'bg-amber-50/30' : idx % 2 === 1 ? 'bg-slate-50/50' : 'bg-white'
                     }`}
                   >
-                    {isParent ? (
-                      <Network className="w-5 h-5 text-amber-600" />
-                    ) : isSubgroup ? (
-                      <Megaphone className="w-5 h-5 text-blue-600" />
-                    ) : (
-                      (group.name || 'G').charAt(0).toUpperCase()
-                    )}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-slate-800 text-sm truncate group-hover:text-emerald-700 transition-colors">
+                    <td className="py-2 px-3 border-r border-slate-200 text-center font-mono text-slate-400">
+                      {idx + 1}
+                    </td>
+                    <td className="py-2 px-3 border-r border-slate-200 font-medium text-slate-900">
+                      <h3 className="font-semibold text-slate-900 inline">
                         {group.name || 'Unnamed Group'}
                       </h3>
+                    </td>
+                    <td className="py-2 px-3 border-r border-slate-200">
                       {isParent ? (
-                        <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200">
+                        <span className="inline-block px-1.5 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 font-semibold text-[11px]">
                           Community Parent (Admins Only)
                         </span>
                       ) : isSubgroup ? (
-                        <span className="inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                        <span className="inline-block px-1.5 py-0.5 bg-blue-100 text-blue-900 border border-blue-200 font-medium text-[11px]">
                           Subgroup
                         </span>
-                      ) : null}
-                    </div>
-
-                    <p className="text-xs text-slate-400 truncate mt-0.5">
+                      ) : (
+                        <span className="text-slate-600 font-medium">Group</span>
+                      )}
+                    </td>
+                    <td className="py-2 px-3 border-r border-slate-200 text-slate-600">
                       {isSubgroup && parentName ? (
-                        <span className="text-slate-500 font-medium">Part of {parentName} • </span>
-                      ) : null}
+                        <span>Part of {parentName}</span>
+                      ) : (
+                        <span className="text-slate-300">—</span>
+                      )}
+                    </td>
+                    <td className="py-2 px-3 border-r border-slate-200 font-mono text-[11px] text-slate-500">
                       {group.id}
-                    </p>
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-emerald-600 group-hover:translate-x-0.5 transition-all shrink-0" />
-              </button>
-            );
-          })}
+                    </td>
+                    <td className="py-1 px-3 text-center">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onSelectGroup(group);
+                        }}
+                        className="px-2.5 py-0.5 text-xs font-semibold bg-white border border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900 cursor-pointer"
+                      >
+                        Select &rarr;
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
     </div>

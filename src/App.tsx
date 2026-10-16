@@ -4,7 +4,7 @@ import { fetchGroups, fetchGroupDetails, getEnvConfig } from './services/openwa'
 import { GroupList } from './components/GroupList';
 import { ParticipantSelector } from './components/ParticipantSelector';
 import { ExportModal } from './components/ExportModal';
-import { MessageSquareText, ShieldCheck } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 
 export function App() {
   const [step, setStep] = useState<'groups' | 'contacts'>('groups');
@@ -79,28 +79,28 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-12">
-      {/* Top Header */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-2xs">
-        <div className="max-w-4xl mx-auto px-4 py-3.5 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-xs">
-              <MessageSquareText className="w-5 h-5" />
+    <div className="min-h-screen bg-slate-100 text-slate-900 pb-12 font-sans">
+      {/* Top Spreadsheet Menubar / Ribbon */}
+      <header className="bg-slate-900 text-white border-b border-slate-700 sticky top-0 z-40 select-none">
+        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-6 h-6 bg-emerald-600 text-white flex items-center justify-center font-bold text-xs">
+              WA
             </div>
             <div>
-              <h1 className="font-bold text-base text-slate-800 leading-tight">
+              <h1 className="font-bold text-sm leading-none tracking-tight">
                 OpenWA Group Extractor
               </h1>
-              <p className="text-xs text-slate-400">Extract WhatsApp contacts to .vcf file</p>
+              <span className="text-[10px] text-slate-400">WhatsApp contacts to .vcf</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-xs">
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 font-medium">
-              <ShieldCheck className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-3 text-xs">
+            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-800 text-slate-300 border border-slate-700 text-[11px] font-mono">
+              <ShieldCheck className="w-3 h-3 text-emerald-400" />
               Read-Only
             </span>
-            <div className="text-right text-[11px] text-slate-400 font-mono hidden md:block">
+            <div className="text-[11px] text-slate-400 font-mono hidden sm:block">
               Session: {envConfig.sessionId ? `${envConfig.sessionId.slice(0, 8)}...` : 'None'}
             </div>
           </div>
@@ -108,7 +108,7 @@ export function App() {
       </header>
 
       {/* Main Content Area */}
-      <main className="max-w-4xl mx-auto px-4 pt-8">
+      <main className="max-w-6xl mx-auto px-4 pt-6">
         {step === 'groups' && (
           <GroupList
             groups={groups}
